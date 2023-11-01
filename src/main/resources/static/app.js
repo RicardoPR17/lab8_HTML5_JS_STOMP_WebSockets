@@ -33,7 +33,7 @@ var app = (function () {
     //subscribe to /topic/TOPICXX when connections succeed
     stompClient.connect({}, function (frame) {
       console.log("Connected: " + frame);
-      stompClient.subscribe("/topic" + topic, function (eventbody) {
+      stompClient.subscribe("/topic/newpoint." + topic, function (eventbody) {
         var JSONevent = JSON.parse(eventbody.body);
         var x = JSONevent.x;
         var y = JSONevent.y;
@@ -48,29 +48,27 @@ var app = (function () {
 
   return {
     init: function () {
-      var can = document.getElementById("canvas");
+      var canvas = document.getElementById("canvas");
 
-      //websocket connection
-      connectAndSubscribe();
+      topic = $("#drawId").val();
+
+      canvas.addEventListener("pointerdown", function (evt){
+        var click = getMousePosition(evt);
+        app.publishPoint(click.x,click.y,topic);
+      });
+
+      alert("Connected to: /topic/newpoint." + topic);
+      connectAndSubscribe(topic);
     },
 
-    publishPoint: function (px, py) {
+    publishPoint: function (px, py, topic) {
       var pt = new Point(px, py);
       console.info("publishing point at " + pt);
       addPointToCanvas(pt);
 
       //publicar el evento
       //enviando un objeto creado a partir de una clase
-      stompClient.send("/topic/newpoint", {}, JSON.stringify(pt));
-    },
-
-    connect: function (){
-      var canvas = document.getElementById("canvas");
-
-      topic = $("#drawId").val();
-      alert("Connected to: /topic/newpoint." + topic);
-      connectAndSubscribe(topic);
-
+      stompClient.send("/topic/newpoint." + topic, {}, JSON.stringify(pt));
     },
 
     disconnect: function () {

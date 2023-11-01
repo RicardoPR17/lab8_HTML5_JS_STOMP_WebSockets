@@ -27,11 +27,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <link rel="stylesheet" href="./styles.css" />
   </head>
 
-  <body onload="app.init()">
+  <body>
+    <input id="drawId" type="number" placeholder="NumberID:"/>
+    <button onclick="app.init()">Connect</button>
     <div id="content">
-      <label for="drawId">NumberID:</label>
-      <input id="drawId" type="number"/>
-      <button onclick="app.connect()">Connect</button>
       <div>
         X:
         <input id="x" type="number" />
