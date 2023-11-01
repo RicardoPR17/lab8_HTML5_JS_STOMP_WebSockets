@@ -26,35 +26,38 @@ var app = (function () {
   };
 
   var connectAndSubscribe = function (topic) {
-    console.info("Connecting to WS...");
-    var socket = new SockJS("/stompendpoint");
-    stompClient = Stomp.over(socket);
+    if (topic) {
+      var socket = new SockJS("/stompendpoint");
+      stompClient = Stomp.over(socket);
 
-    //subscribe to /topic/TOPICXX when connections succeed
-    stompClient.connect({}, function (frame) {
-      console.log("Connected: " + frame);
-      stompClient.subscribe("/topic/newpoint." + topic, function (eventbody) {
-        var JSONevent = JSON.parse(eventbody.body);
-        var x = JSONevent.x;
-        var y = JSONevent.y;
-        /* alert(x + ", " + y); */
+      //subscribe to /topic/TOPICXX when connections succeed
+      stompClient.connect({}, function (frame) {
+        console.log("Connected: " + frame);
+        stompClient.subscribe("/topic/newpoint." + topic, function (eventbody) {
+          var JSONevent = JSON.parse(eventbody.body);
+          var x = JSONevent.x;
+          var y = JSONevent.y;
+          /* alert(x + ", " + y); */
 
-        // Dibujar punto con las coordenadas enviadas
-        var point = new Point(x, y);
-        addPointToCanvas(point);
+          // Dibujar punto con las coordenadas enviadas
+          var point = new Point(x, y);
+          addPointToCanvas(point);
+        });
       });
-    });
+    } else {
+      alert("Ingrese un número de topic para conectarse");
+    }
   };
 
   return {
     init: function () {
       var canvas = document.getElementById("canvas");
 
-      topic = $("#drawId").val();
+      var topic = $("#drawId").val();
 
-      canvas.addEventListener("pointerdown", function (evt){
+      canvas.addEventListener("pointerdown", function (evt) {
         var click = getMousePosition(evt);
-        app.publishPoint(click.x,click.y,topic);
+        app.publishPoint(click.x, click.y, topic);
       });
 
       alert("Connected to: /topic/newpoint." + topic);
