@@ -71,14 +71,6 @@ var app = (function () {
       alert("Connected to: /topic/newpoint." + topic);
       connectAndSubscribe(topic);
 
-      if(window.PointerEvent){
-        canvas.addEventListener("pointerdown", function (event) {
-          var pt = getMousePosition(event);
-          addPointToCanvas(pt);
-          stompClient.send("/topic" + topic, {}, JSON.stringify(pt));
-        })
-      }
-
     },
 
     disconnect: function () {
