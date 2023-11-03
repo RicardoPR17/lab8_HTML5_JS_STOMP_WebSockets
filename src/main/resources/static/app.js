@@ -7,10 +7,10 @@ var app = (function () {
   }
 
   class Polygon {
-      constructor(points) {
-        this.points = points;
-      }
+    constructor(points) {
+      this.points = points;
     }
+  }
 
   var stompClient = null;
 
@@ -23,19 +23,18 @@ var app = (function () {
   };
 
   var addPolygonToCanvas = function (polygon) {
-
-      var canvas = document.getElementById("canvas");
-      var ctx = canvas.getContext("2d");
-      ctx.fillStyle = "pink";
-      ctx.beginPath();
-      ctx.moveTo(polygon.points[0].x, polygon.points[0].y);
-      for (var i = 1; i < polygon.points.length; i++) {
-        ctx.lineTo(polygon.points[i].x, polygon.points[i].y);
-      }
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-    };
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.fillStyle = "pink";
+    ctx.beginPath();
+    ctx.moveTo(polygon.points[0].x, polygon.points[0].y);
+    for (var i = 1; i < polygon.points.length; i++) {
+      ctx.lineTo(polygon.points[i].x, polygon.points[i].y);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  };
 
   var getMousePosition = function (evt) {
     canvas = document.getElementById("canvas");
@@ -66,12 +65,10 @@ var app = (function () {
         });
 
         stompClient.subscribe("/topic/newpolygon." + topic, function (eventbody) {
-                  var JSONevent = JSON.parse(eventbody.body);
-                  var polygon = new Polygon(JSONevent);
-                  addPolygonToCanvas(polygon);
+          var JSONevent = JSON.parse(eventbody.body);
+          var polygon = new Polygon(JSONevent);
+          addPolygonToCanvas(polygon);
         });
-
-
       });
     } else {
       alert("Ingrese un número de topic para conectarse");
