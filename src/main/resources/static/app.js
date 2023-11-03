@@ -6,6 +6,12 @@ var app = (function () {
     }
   }
 
+  class Polygon {
+      constructor(points) {
+        this.points = points;
+      }
+    }
+
   var stompClient = null;
 
   var addPointToCanvas = function (point) {
@@ -15,6 +21,21 @@ var app = (function () {
     ctx.arc(point.x, point.y, 3, 0, 2 * Math.PI);
     ctx.stroke();
   };
+
+  var addPolygonToCanvas = function (polygon) {
+
+      var canvas = document.getElementById("canvas");
+      var ctx = canvas.getContext("2d");
+      ctx.fillStyle = "pink";
+      ctx.beginPath();
+      ctx.moveTo(polygon.points[0].x, polygon.points[0].y);
+      for (var i = 1; i < polygon.points.length; i++) {
+        ctx.lineTo(polygon.points[i].x, polygon.points[i].y);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    };
 
   var getMousePosition = function (evt) {
     canvas = document.getElementById("canvas");
@@ -43,6 +64,14 @@ var app = (function () {
           var point = new Point(x, y);
           addPointToCanvas(point);
         });
+
+        stompClient.subscribe("/topic/newpolygon." + topic, function (eventbody) {
+                  var JSONevent = JSON.parse(eventbody.body);
+                  var polygon = new Polygon(JSONevent);
+                  addPolygonToCanvas(polygon);
+        });
+
+
       });
     } else {
       alert("Ingrese un número de topic para conectarse");
@@ -60,7 +89,7 @@ var app = (function () {
         app.publishPoint(click.x, click.y, topic);
       });
 
-      alert("Connected to: /topic/newpoint." + topic);
+      alert("Connected to: /app/newpoint." + topic);
       connectAndSubscribe(topic);
     },
 
@@ -71,7 +100,7 @@ var app = (function () {
 
       //publicar el evento
       //enviando un objeto creado a partir de una clase
-      stompClient.send("/topic/newpoint." + topic, {}, JSON.stringify(pt));
+      stompClient.send("/app/newpoint." + topic, {}, JSON.stringify(pt));
     },
 
     disconnect: function () {
