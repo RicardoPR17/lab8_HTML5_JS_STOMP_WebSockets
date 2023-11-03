@@ -37,7 +37,11 @@ var app = (function () {
         var JSONevent = JSON.parse(eventbody.body);
         var x = JSONevent.x;
         var y = JSONevent.y;
-        alert(x + ", " + y);
+        /* alert(x + ", " + y); */
+
+        // Dibujar punto con las coordenadas enviadas
+        var point = new Point(x, y);
+        addPointToCanvas(point);
       });
     });
   };
