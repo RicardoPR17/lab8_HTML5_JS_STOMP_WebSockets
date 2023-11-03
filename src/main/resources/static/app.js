@@ -23,12 +23,12 @@ var app = (function () {
   };
 
   var addPolygonToCanvas = function (polygon) {
-    var canvas = document.getElementById("canvas");
-    var ctx = canvas.getContext("2d");
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
     ctx.fillStyle = "pink";
     ctx.beginPath();
     ctx.moveTo(polygon.points[0].x, polygon.points[0].y);
-    for (var i = 1; i < polygon.points.length; i++) {
+    for (let i = 1; i < polygon.points.length; i++) {
       ctx.lineTo(polygon.points[i].x, polygon.points[i].y);
     }
     ctx.closePath();
@@ -65,8 +65,8 @@ var app = (function () {
         });
 
         stompClient.subscribe("/topic/newpolygon." + topic, function (eventbody) {
-          var JSONevent = JSON.parse(eventbody.body);
-          var polygon = new Polygon(JSONevent);
+          let JSONevent = JSON.parse(eventbody.body);
+          let polygon = new Polygon(JSONevent);
           addPolygonToCanvas(polygon);
         });
       });
